@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+int main(int argc,char *argv[])
+{
+	FILE * fp;
+	errno_t err;
+	if (argc != 2)
+	{
+		exit(0);
+	}
+	char ch;
+	char sel;
+	int flag = 0;
+	long posr = 0L;
+	long pose = 0L;
+	if ((err = fopen_s(&fp, argv[1], "r")) != NULL)
+	{
+		fprintf(stderr, "Open False");
+		exit(0);
+	}
+	printf("please input you want delete the char");
+	scanf_s("%c", &sel,1);
+	while (!feof(fp))
+	{
+		ch = getc(fp);
+		if (ch != '\n')
+		{
+			if (ch == sel)
+			{
+				flag = 1;
+			}
+		}
+		else
+		{
+			if (flag == 1)
+			{
+				fseek(fp, 0L, SEEK_CUR);
+				posr = pose;
+				pose = ftell(fp)-1;
+				for (int i = 0; i <= (pose - posr); i++)
+				{
+					fseek(fp, posr + (long)i, SEEK_SET);
+					ch = getc(fp);
+					printf("%c", ch);
+				}
+				flag = 0;
+			}
+			else
+				pose = ftell(fp);
+
+		}	
+	}
+	return 0;
+}
